@@ -3,6 +3,7 @@
 
 import math
 import random
+import matplotlib.pyplot as plt
 
 
 class KMeans:
@@ -10,6 +11,8 @@ class KMeans:
         self.vectors = vectors  # n * m的矩阵，m为向量维度，n为像两个数
         self.k = k
         self.result = dict()
+        self.debug = False
+        self.threshold = 0.001
 
     def init_center(self, vectors):
         center = []
@@ -31,14 +34,34 @@ class KMeans:
     @staticmethod
     def min_index(tuple_list):
         min_value = tuple_list[0]
-        index = -1
+        index = 0
         for i, v in enumerate(tuple_list):
-            if v <= min_value:
+            if v < min_value:
+                min_value = v
                 index = i
         return index
 
+    def debug_view(self, local_center, local_groups):
+        center_x = [local_center[v][0] for v in local_groups.keys()]
+        center_y = [local_center[v][1] for v in local_groups.keys()]
+
+        for k, v in local_groups.iteritems():
+            x = []
+            y = []
+            for point in self.vectors[v]:
+                x.append(point[0])
+                y.append(point[1])
+
+            center_x.remove(local_center[k][0])
+            center_y.remove(local_center[k][1])
+            plt.figure()
+            plt.scatter(center_x, center_y)
+            plt.scatter(x, y)
+            plt.scatter([local_center[k][0]], [local_center[k][1]])
+            plt.show()
+
     def train(self):
-        groups = {}  # key是数字，value用来存储已经分类的点
+        groups = {}  # key是数字，value用来存储已经分类的向量的索引
 
         vectors = [v for v in self.vectors]
 
@@ -46,27 +69,31 @@ class KMeans:
 
         local_center = center
         while True:
-            orig_vectors = [v for v in self.vectors]
             local_groups = dict()
-            for v in orig_vectors:
+            for idx, v in enumerate(self.vectors):
                 # 求距center中最近的点
-                min_index = self.min_index([self.distance(c, v) for c in local_center])
+                dist_vec = [self.distance(c, v) for c in local_center]
+                min_index = self.min_index(dist_vec)
                 # 把该点加到相应的组里
                 if min_index != -1:
-                    # print "add to group " + str(min_index)
-                    local_groups.setdefault(min_index, []).append(v)
+                    local_groups.setdefault(min_index, []).append(idx)
 
             print len(local_groups)
 
-            sum_vectors = [(reduce(self.add_vector, group_vector_list), len(group_vector_list)) for group_vector_list in local_groups.values()]
+            sum_vectors = [
+                (reduce(self.add_vector, map(lambda i: self.vectors[i], group_index_list)), len(group_index_list))
+                for group_index_list in local_groups.values()]
             mean_vector = [map(lambda x: x / sum_vector[1], sum_vector[0]) for sum_vector in sum_vectors]
 
-            print mean_vector
+            if self.debug:
+                self.debug_view(local_center, local_groups)
+
             if reduce(lambda x, y: x and y,
-                      [(self.distance(t[0], t[1]) < 0.01) for t in zip(local_center, mean_vector)]):
+                      [(self.distance(t[0], t[1]) < self.threshold) for t in zip(local_center, mean_vector)]):
                 groups = local_groups
+                center = local_center
                 break
 
             local_center = mean_vector
 
-        return groups
+        return groups, center

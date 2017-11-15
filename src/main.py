@@ -25,21 +25,27 @@ def test():
 
 
 if __name__ == '__main__':
-
     vectors = test()
 
-    kmeans = KMeans(vectors, 10)
-    groups = kmeans.train()
+    kmeans = KMeans(vectors, 6)
+    groups, center = kmeans.train()
+
+    for k, v in groups.iteritems():
+        print k, v
 
     plt.figure()
     for k, v in groups.iteritems():
         x = []
         y = []
         for point in v:
-            x.append(point[0])
-            y.append(point[1])
+            x.append(vectors[point][0])
+            y.append(vectors[point][1])
 
         plt.scatter(x, y)
+
+    x = [v[0] for v in center]
+    y = [v[1] for v in center]
+    #plt.scatter(x, y)
 
     plt.show()
 
