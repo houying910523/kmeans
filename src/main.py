@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 from kmeans import KMeans
+from kmeans_plus import KMeansPlus
 import matplotlib.pyplot as plt
 
 
@@ -27,7 +28,8 @@ def test():
 if __name__ == '__main__':
     vectors = test()
 
-    kmeans = KMeans(vectors, 6)
+    kmeans = KMeansPlus(vectors, 4)
+    #kmeans = KMeans(vectors, 4)
     groups, center = kmeans.train()
 
     for k, v in groups.iteritems():
@@ -45,7 +47,7 @@ if __name__ == '__main__':
 
     x = [v[0] for v in center]
     y = [v[1] for v in center]
-    #plt.scatter(x, y)
+    plt.scatter(x, y)
 
     plt.show()
 
