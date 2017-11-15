@@ -28,8 +28,8 @@ def test():
 if __name__ == '__main__':
     vectors = test()
 
-    kmeans = KMeansPlus(vectors, 4)
-    #kmeans = KMeans(vectors, 4)
+    kmeans = KMeansPlus(vectors, 10)
+    #kmeans = KMeans(vectors, 10)
     groups, center = kmeans.train()
 
     for k, v in groups.iteritems():

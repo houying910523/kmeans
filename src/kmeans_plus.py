@@ -16,9 +16,10 @@ class KMeansPlus:
 
     def init_center(self, vectors):
         center = []
-        c1 = random.choice(vectors)
+        r = int(random.random() * len(vectors))
+        c1 = vectors[r]
         center.append(c1)
-        vectors.remove(c1)
+        vectors.pop(r)
 
         for i in range(1, self.k):
             #计算每个点到聚类中心最近的距离
