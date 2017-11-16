@@ -24,6 +24,7 @@ class KMeansPlus:
         for i in range(1, self.k):
             #计算每个点到聚类中心最近的距离
             min_dist_2_center = []
+            print "计算第" + str(i) + "个初始点"
             for idx, v in enumerate(vectors):
                 dist_2_centers = [self.distance(v, c) for c in center]
                 min_index, min_value = self.find_min(dist_2_centers)
@@ -84,9 +85,11 @@ class KMeansPlus:
         vectors = [v for v in self.vectors]
 
         center = self.init_center(vectors)  # 用来存储聚簇的中心点,[[x1,x2,x3,...],[x1,x2,x3,...],...]
-
+        print "初始化完成。。。"
+        print center
         local_center = center
         while True:
+            print "【迭代】"
             local_groups = dict()
             for idx, v in enumerate(self.vectors):
                 # 求距center中最近的点

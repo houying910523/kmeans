@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 
 
 def func1():
-    f = open('../data/sentence_vector.txt', 'r')
-    vectors = []
-    for line in f:
-        line = line.strip().split("\t")
-        str_vector = line[1].split(" ")
-        float_vector = map(lambda x: float(x), str_vector)
-        vectors.append(float_vector)
+    with open('../data/sentence_vector.txt', 'r') as f:
+    #with open('/home/houying/tmp/sentence_vector', 'r') as f:
+        vectors = []
+        for line in f:
+            line = line.strip().split("\t")
+            str_vector = line[1].split(" ")
+            float_vector = map(lambda x: float(x), str_vector)
+            vectors.append(float_vector)
     return vectors
 
 
